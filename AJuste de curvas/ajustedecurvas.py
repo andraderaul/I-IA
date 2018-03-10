@@ -49,22 +49,15 @@ def erroTotal(X,Y,P):
 
 ''' funcao que calcula as derivadas parciais do erro com relacao a cada um dos parametros'''
 def parcial(X,Y,P): #verificar isso depois
-	e = erro(X,Y,P)
-	lista = []
-	p1 = 0
-	p2 = 0
-	p3 = 0
-	
-	for i in range(len(e)):
-		p1 += e[i]
-		
-	for i in range(len(e)):
-		p2 += (i * e[i] )
-	
-	for i in range(len(e)):
-		p3 += ( e[i] * X[i]**2 )
-		
-	return [-p1,-p2,-p3]
+	E = erro(X,Y,P)
+	DP = []
+	soma = 0 
+	for i in range(len(P)):
+		soma = 0
+		for j in range(len(E)):
+			soma += E[j] * (X[j] ** i)
+		DP.append(-soma)	 
+	return DP
 	
 ''' funcao que atualiza os parametros'''
 def atualiza(X,Y,P,alfa): #verificar isso depois
@@ -73,17 +66,19 @@ def atualiza(X,Y,P,alfa): #verificar isso depois
 	for i in range(len(P)):
 		pAtt.append(P[i] - (alfa * pParcial[i]))
 	return pAtt
+
 def ajusta(nome, K, M, alpha):		
 	
 	SEQ = 0
 	X, Y = leArquivo(nome)
-	erro_aceitavel = 3
-	parametros = iniciaK(K+1) # K + 1 pq polinomio de grau K tem K + 1 parametros
+	erro_aceitavel = 0.5
+	parametros = iniciaK(K) #polinomio de grau K
 #	P =  [1,2,0.5]
 	P = parametros
 	i = 0
 	while i < M :		
 		SEQ = erroTotal(X,Y,P)
+		print(SEQ)
 		if i %100 == 0:
 			print('Valor da seq %f: ' %SEQ)
 			print('Parâmetros:', P)		
@@ -100,7 +95,7 @@ def main():
 	#alpha = float(input())
 	#SEQ, P = ajusta(nome,K,M,alpha)
 	#teste
-	SEQ, P = ajusta('entrada.txt',2,10000,0.001)
+	SEQ, P = ajusta('teste1.txt',2,50000,0.00001)
 	print('Valor final da seq: %f' %SEQ)
 	print('Parâmetros Final:', P)
 	
